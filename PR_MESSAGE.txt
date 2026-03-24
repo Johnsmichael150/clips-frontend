@@ -1,0 +1,8 @@
+feat(ui): add responsive global metrics cards to footer per Figma design
+
+- Implements three cards: Clips Today, Viral Accuracy, Avg Sync Time
+- Matches Figma: 288x82px, 16px gap, border, background, font
+- Responsive: row on desktop, stacked on mobile
+- Ready for API integration for live stats
+
+Closes #34
