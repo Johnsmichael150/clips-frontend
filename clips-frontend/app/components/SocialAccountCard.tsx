@@ -35,7 +35,7 @@ export default function SocialAccountCard({
       aria-label={`Connect ${label} account`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className="rounded-2xl bg-white dark:bg-zinc-900 p-6 flex flex-col items-center gap-4 cursor-pointer select-none border border-zinc-200 dark:border-zinc-800 transition-all duration-200 ease-in-out hover:border-zinc-400 dark:hover:border-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+      className="rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-4 sm:p-6 flex flex-col items-center gap-4 cursor-pointer select-none border border-zinc-200 dark:border-zinc-800 transition-all duration-200 ease-in-out hover:border-zinc-400 dark:hover:border-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
     >
       <div className="flex items-center justify-center">
         {icon ?? <span className="text-lg font-semibold">{label}</span>}

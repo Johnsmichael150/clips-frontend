@@ -36,16 +36,17 @@ export default function ProgressCard({
 
   return (
     <div className="w-full pb-8">
-      <div className="backdrop-blur-[6px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] flex flex-col gap-4 p-[33px] rounded-2xl w-full">
+      {/* Glassmorphism card with responsive padding */}
+      <div className="backdrop-blur-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] flex flex-col gap-4 p-4 sm:p-6 lg:p-8 rounded-2xl w-full">
         {/* Header: label + percentage */}
-        <div className="flex items-end justify-between w-full">
+        <div className="flex items-end justify-between w-full flex-wrap gap-2">
           <div className="flex gap-2 items-center">
             <StreamIcon />
-            <span className="text-[#e2e8f0] text-[12px] font-semibold tracking-[0.6px] uppercase">
+            <span className="text-[#e2e8f0] text-[10px] sm:text-[12px] font-semibold tracking-[0.6px] uppercase">
               Processing Stream
             </span>
           </div>
-          <span className="text-[#00ff9d] text-[24px] font-black leading-8">
+          <span className="text-[#00ff9d] text-xl sm:text-2xl lg:text-[24px] font-black leading-8">
             {clampedPercentage}%
           </span>
         </div>
@@ -59,17 +60,17 @@ export default function ProgressCard({
         </div>
 
         {/* Footer: time remaining + GPU status */}
-        <div className="flex items-center justify-between w-full pt-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full pt-2 gap-2">
           <div className="flex gap-2 items-center">
             <ClockIcon />
-            <span className="text-[#94a3b8] text-[14px]">
+            <span className="text-[#94a3b8] text-xs sm:text-sm">
               Estimated time remaining: {estimatedTimeRemaining}
             </span>
           </div>
           {isGpuAccelerated && (
             <div className="flex gap-1.5 items-center">
               <span className="bg-[#00ff9d] rounded-full size-2 animate-pulse" />
-              <span className="text-[#cbd5e1] text-[14px]">
+              <span className="text-[#cbd5e1] text-xs sm:text-sm">
                 GPU Accelerated
               </span>
             </div>

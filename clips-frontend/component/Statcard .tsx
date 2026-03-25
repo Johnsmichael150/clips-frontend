@@ -120,10 +120,10 @@ export default function StatCard({
     return (
         <div
             className={[
-                // Card shell
+                // Card shell with responsive padding
                 "relative flex flex-col justify-between",
-                "rounded-2xl border border-white/[0.07] bg-[#141414B2] backdrop-blur-sm",
-                "px-8 py-8 overflow-hidden",
+                "rounded-2xl border border-white/[0.07] bg-[#141414B2] backdrop-blur-xl",
+                "px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8 overflow-hidden",
                 "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent",
                 "animate-stat-in",
                 className,
@@ -137,7 +137,7 @@ export default function StatCard({
         >
             {/* ── Top row: label + icon ─────────────────────────────── */}
             <div className="flex items-center justify-between gap-3 mb-4">
-                <p className="text-[16px] font-medium text-[#94A3B8] leading-tight tracking-wide uppercase">
+                <p className="text-xs sm:text-sm lg:text-[16px] font-medium text-[#94A3B8] leading-tight tracking-wide uppercase">
                     {label}
                 </p>
 
@@ -153,7 +153,7 @@ export default function StatCard({
 
             <div className="flex gap-4">
                 <p
-                    className="text-[28px] font-bold text-white leading-none tracking-tight tabular-nums mb-3"
+                    className="text-2xl sm:text-3xl lg:text-[28px] font-bold text-white leading-none tracking-tight tabular-nums mb-3"
                     aria-label={`${label}: ${value}`}
                 >
                     {animatedValue}

@@ -130,12 +130,12 @@ export default function ProcessDashboard() {
     <div className="flex flex-col gap-6 w-full max-w-lg">
       <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm">
         <div className="flex items-start justify-between mb-1">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-50">
             Background Processing
           </h2>
           {isProcessing && <StatusDot status={socketStatus} />}
         </div>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-5">
+        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mb-5">
           Processing continues even if you navigate away. Come back anytime to
           check progress.
         </p>

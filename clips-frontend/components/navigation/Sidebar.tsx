@@ -17,7 +17,7 @@ const navItems: NavItem[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/5 bg-[#0A0A0A] px-5 py-6">
+    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col border-r border-white/5 bg-[#0A0A0A] px-5 py-6 hidden lg:flex">
       <div className="flex items-center gap-3 px-2">
         <Image src="/logo.svg" alt="ClipCash AI logo" width={36} height={36} />
         <span className="text-lg font-semibold tracking-tight">
