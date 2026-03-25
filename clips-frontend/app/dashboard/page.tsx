@@ -1,23 +1,22 @@
-import StatCardGroup from '@/component/Statcardgroup '
-import RevenueTrendCard from '@/app/components/RevenueTrendCard'
-import DistributionCard from '@/app/components/DistributionCard'
+
+import RevenueTrendCard from "@/app/components/RevenueTrendCard";
+import DistributionCard from "@/app/components/DistributionCard";
+import DashboardHeader from "../components/DashboardHeader";
+import StatCardGroup from "@/component/Statcardgroup ";
 
 const Dashboard = () => {
-    return (
-        <div className='w-full max-w-[1920px] mx-auto px-4 py-6'>
-            {/* Bento Grid Container */}
-            <div className='bento-grid'>
-                {/* Stats Cards Row - 3 equal columns on desktop */}
-                <StatCardGroup />
-                
-                {/* Revenue Trend Card - 2/3 width on desktop */}
-                <RevenueTrendCard />
-                
-                {/* Distribution Card - 1/3 width on desktop */}
-                <DistributionCard />
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className="w-full max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <DashboardHeader />
 
-export default Dashboard
+      {/* Bento Grid Container */}
+      <div className="bento-grid">
+        <StatCardGroup />
+        <RevenueTrendCard />
+        <DistributionCard />
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
