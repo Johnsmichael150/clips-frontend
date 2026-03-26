@@ -2,6 +2,7 @@
 
 import { TrendingDown, TrendingUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Skeleton } from "@/app/components/Skeleton";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -30,6 +31,8 @@ export interface StatCardProps {
     className?: string;
     /** Stagger index for the entrance animation (0, 1, 2 …) */
     index?: number;
+    /** Whether the card is in a loading state */
+    loading?: boolean;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -95,8 +98,31 @@ export default function StatCard({
     iconColor = "#00C27C",
     className = "",
     index = 0,
+    loading = false,
 }: StatCardProps) {
     const animatedValue = useCountUp(value);
+
+    if (loading) {
+        return (
+            <div
+                className={[
+                    "relative flex flex-col justify-between",
+                    "rounded-2xl border border-white/[0.07] bg-[#141414B2] backdrop-blur-xl",
+                    "px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8 overflow-hidden",
+                    className,
+                ].join(" ")}
+            >
+                <div className="flex items-center justify-between gap-3 mb-4">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="w-9 h-9 rounded-xl" />
+                </div>
+                <div className="flex flex-col gap-2">
+                    <Skeleton className="h-8 w-32" />
+                    <Skeleton className="h-4 w-40" />
+                </div>
+            </div>
+        );
+    }
 
     const hasTrend = trend !== undefined;
     const isPositive = (trend ?? 0) > 0;

@@ -6,7 +6,32 @@
  * Spans 2/3 width in the Bento grid layout
  */
 
+import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { Skeleton } from "./Skeleton";
+
 export default function RevenueTrendCard() {
+  const { data, loading } = useDashboardData();
+
+  if (loading) {
+    return (
+      <div className="bento-revenue-trend bento-card bento-card-tall">
+        <div className="flex items-center justify-between mb-6">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+          <div className="text-right space-y-2">
+            <Skeleton className="h-8 w-24 ml-auto" />
+            <Skeleton className="h-4 w-16 ml-auto" />
+          </div>
+        </div>
+        <Skeleton className="flex-1 w-full rounded-lg" />
+      </div>
+    );
+  }
+
+  const revenue = data?.stats.earnings;
+
   return (
     <div className="bento-revenue-trend bento-card bento-card-tall">
       <div className="flex items-center justify-between mb-6">
@@ -15,10 +40,10 @@ export default function RevenueTrendCard() {
           <p className="text-sm text-zinc-400 mt-1">Last 30 days performance</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-white">$12,450.80</p>
+          <p className="text-2xl font-bold text-white">{revenue?.total || "$0.00"}</p>
           <p className="text-sm text-[#00C27C] flex items-center justify-end gap-1 mt-1">
-            <span>↑</span>
-            <span>+12.5%</span>
+            <span>{revenue?.trend && revenue.trend > 0 ? "↑" : "↓"}</span>
+            <span>{revenue?.trend ? `+${revenue.trend}%` : "0%"}</span>
           </p>
         </div>
       </div>

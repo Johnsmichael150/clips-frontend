@@ -6,7 +6,35 @@
  * Spans 1/3 width in the Bento grid layout
  */
 
+import { useDashboardData } from "@/app/hooks/useDashboardData";
+import { Skeleton } from "./Skeleton";
+
 export default function DistributionCard() {
+  const { loading } = useDashboardData();
+
+  if (loading) {
+    return (
+      <div className="bento-distribution bento-card bento-card-tall">
+        <div className="mb-6 space-y-2">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+        <Skeleton className="flex-1 w-full rounded-lg mb-4" />
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Skeleton className="w-3 h-3 rounded-full" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <Skeleton className="h-4 w-10" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const platforms = [
     { name: "YouTube", percentage: 45, color: "#FF0000" },
     { name: "TikTok", percentage: 30, color: "#00F2EA" },
