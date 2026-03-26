@@ -1,13 +1,10 @@
 "use client";
 
 import React from "react";
-// import TikTokIcon from "./icons/TikTokIcon";
-// import InstagramIcon from "./icons/InstagramIcon";
-// import YouTubeIcon from "./icons/YouTubeIcon";
 import SocialAccountCard from "./SocialAccountCard";
-import { InstagramIcon } from "./icons/InstagramIcon";
-import { YouTubeIcon } from "./icons/YouTubeIcon";
-import { TikTokIcon } from "./icons/TikTokIcon";
+import { InstagramIcon } from "@/components/icons/InstagramIcon";
+import { YouTubeIcon } from "@/components/icons/YouTubeIcon";
+import { TikTokIcon } from "@/components/icons/TikTokIcon";
 
 type PlatformConfig = {
   platform: "tiktok" | "instagram" | "youtube";
