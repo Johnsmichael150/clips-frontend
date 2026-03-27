@@ -25,8 +25,9 @@ const PLATFORM_ITEMS: PlatformItem[] = [
 
 const LEGAL_ITEMS: LegalItem[] = [
   { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Cookie Settings", href: "/cookies" },
+  { label: "Terms", href: "/terms" },
+  { label: "API Documentation", href: "/api-docs" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 export default function Footer() {
@@ -35,11 +36,11 @@ export default function Footer() {
       className={[
         "w-full border-t border-white/[0.07]",
         "bg-[#0A0A0ACC] backdrop-blur-xl",
-        "px-4 md:px-6 py-4",
+        "px-4 md:px-6 py-8",
       ].join(" ")}
     >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-2 shrink-0">
+      <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-2">
           <Image
             src="/images/logo.png"
             alt="ClipCash logo"
@@ -47,10 +48,27 @@ export default function Footer() {
             width={400}
             className="object-cover w-28 h-auto"
           />
-          <span className="text-white/30 text-xs">
-            © 2024 ClipCash AI. Secure OAuth2 connection for all socials. We
-            never share your private data.
+          <span className="text-gray-400 text-xs text-center">
+            © 2024 ClipCash AI. Built for the future of content creation.
           </span>
+        </div>
+
+        <div className="flex items-center gap-6">
+          {LEGAL_ITEMS.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={[
+                "text-xs text-gray-400",
+                "hover:text-gray-300 hover:underline",
+                "transition-colors duration-150",
+              ].join(" ")}
+              target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         <nav aria-label="Partner platforms" className="flex items-center gap-6">
@@ -60,27 +78,13 @@ export default function Footer() {
               href={item.href}
               aria-label={item.label}
               className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+              target={item.href.startsWith("http") ? "_blank" : undefined}
+              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
             >
               <item.icon aria-hidden />
             </Link>
           ))}
         </nav>
-
-        <div className="flex items-center gap-4">
-          {LEGAL_ITEMS.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={[
-                "text-xs text-white/30",
-                "hover:text-white/70 hover:underline",
-                "transition-colors duration-150",
-              ].join(" ")}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
       </div>
     </footer>
   );
