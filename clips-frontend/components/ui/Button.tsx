@@ -19,7 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={`px-6 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
+        className={`min-h-[44px] px-6 py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 ${
           fullWidth ? 'w-full' : ''
         } ${variantStyles} ${className}`}
         {...props}

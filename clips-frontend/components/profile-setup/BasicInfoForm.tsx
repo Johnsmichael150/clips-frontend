@@ -24,7 +24,7 @@ export const BasicInfoForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-8 rounded-2xl bg-[#121212]/80 border border-gray-800 shadow-2xl backdrop-blur-xl">
+    <div className="w-full p-5 sm:p-8 rounded-2xl bg-[#121212]/80 border border-gray-800 shadow-2xl backdrop-blur-xl">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Basic Information</h2>
         <p className="text-gray-400 text-sm">Let's start with the basics to set up your profile.</p>

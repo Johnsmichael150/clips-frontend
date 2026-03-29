@@ -95,6 +95,7 @@ export default function OnboardingStep1({ onContinue }: OnboardingStep1Props) {
         justifyContent: "center",
         background: "var(--color-background-tertiary)",
         padding: "1.5rem",
+        overflowX: "hidden",
       }}
     >
       <div
@@ -104,7 +105,8 @@ export default function OnboardingStep1({ onContinue }: OnboardingStep1Props) {
           background: "var(--color-background-primary)",
           borderRadius: "var(--border-radius-xl)",
           border: "0.5px solid var(--color-border-tertiary)",
-          padding: "2rem 2rem 2.5rem",
+          padding: "1.5rem 1.25rem 2rem",
+          boxSizing: "border-box",
         }}
       >
         {/* Step indicator */}
@@ -331,7 +333,7 @@ export default function OnboardingStep1({ onContinue }: OnboardingStep1Props) {
               justifyContent: "center",
               gap: "8px",
               width: "100%",
-              height: "42px",
+              minHeight: "44px",
               fontSize: "14px",
               fontWeight: 500,
               color: isValid ? "#0A0A0A" : "var(--color-text-tertiary)",

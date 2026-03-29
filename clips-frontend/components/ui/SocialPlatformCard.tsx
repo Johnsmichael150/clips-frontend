@@ -103,7 +103,7 @@ export function SocialPlatformCard({
           <Button
             variant="outline"
             onClick={onManage}
-            className="border-gray-700 text-white hover:border-[#17f9bf] hover:text-[#17f9bf]"
+            className="min-h-[44px] border-gray-700 text-white hover:border-[#17f9bf] hover:text-[#17f9bf]"
           >
             Manage
           </Button>
@@ -111,7 +111,7 @@ export function SocialPlatformCard({
           <Button
             variant="primary"
             onClick={onConnect}
-            className="bg-[#17f9bf] text-black hover:bg-[#88ffd9]"
+            className="min-h-[44px] bg-[#17f9bf] text-black hover:bg-[#88ffd9]"
           >
             Connect Account
           </Button>

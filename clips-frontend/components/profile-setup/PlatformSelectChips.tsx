@@ -47,7 +47,7 @@ export function PlatformSelectChips({
               onClick={() => togglePlatform(platform)}
               className={`
                 relative flex items-center justify-center gap-2 px-5 py-3 rounded-full 
-                text-sm font-medium transition-all duration-200 cursor-pointer border
+                text-sm font-medium transition-all duration-200 cursor-pointer border min-h-[44px]
                 focus:outline-none focus:ring-2 focus:ring-[#17f9bf] focus:ring-offset-2 focus:ring-offset-[#050505]
                 ${
                   isSelected

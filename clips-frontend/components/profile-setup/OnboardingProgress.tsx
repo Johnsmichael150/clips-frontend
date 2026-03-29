@@ -17,7 +17,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
   const percentage = Math.min(100, Math.max(0, Math.round((currentStep / totalSteps) * 100)));
 
   return (
-    <div className={`w-full max-w-md mx-auto mb-8 p-6 rounded-2xl bg-[#121212]/80 border border-gray-800 shadow-xl backdrop-blur-xl ${className}`}>
+    <div className={`w-full max-w-md mx-auto mb-8 p-4 sm:p-6 rounded-2xl bg-[#121212]/80 border border-gray-800 shadow-xl backdrop-blur-xl ${className}`}>
       <div className="flex justify-between items-end mb-4">
         <div className="flex flex-col gap-1">
           <span className="text-gray-400 text-xs font-semibold tracking-wider uppercase">

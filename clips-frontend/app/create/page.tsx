@@ -112,7 +112,7 @@ export default function CreateClipsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 p-6">
+    <div className="min-h-screen bg-zinc-950 p-4 sm:p-6">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8">
           <h1 className="text-4xl font-semibold text-white">Create Clips</h1>
@@ -190,7 +190,7 @@ export default function CreateClipsPage() {
                   type="button"
                   onClick={() => togglePlatform(platform.id)}
                   disabled={isSubmitting}
-                  className={`rounded-xl p-4 text-center font-medium transition ${
+                  className={`rounded-xl p-4 text-center font-medium transition min-h-[44px] ${
                     platform.enabled
                       ? "bg-[#00E68A]/10 text-[#00E68A] ring-2 ring-[#00E68A]"
                       : "bg-zinc-900/50 text-zinc-400 ring-1 ring-zinc-800 hover:bg-zinc-900"
