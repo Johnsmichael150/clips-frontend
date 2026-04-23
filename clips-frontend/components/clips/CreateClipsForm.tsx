@@ -9,6 +9,7 @@ import {
   Check, 
   Info 
 } from "lucide-react";
+import Switch from "../Switch";
 
 export default function CreateClipsForm() {
   const router = useRouter();
@@ -39,6 +40,34 @@ export default function CreateClipsForm() {
     router.push("/dashboard/processing");
   };
 
+  const [videoUrl, setVideoUrl] = useState("");
+  const [urlError, setUrlError] = useState<string | null>(null);
+
+  const ytVimeoRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtu(?:be\.com\/(?:watch\?v=|embed\/|v\/)|\.be\/)|vimeo\.com\/)([\w-]{11,}|\d+)(?:[&?#].*)?$/i;
+
+  const validateUrl = (value: string) => {
+    if (!value) return false;
+    return ytVimeoRegex.test(value.trim());
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setVideoUrl(val);
+    if (val === "") {
+      setUrlError(null);
+      return;
+    }
+    setUrlError(validateUrl(val) ? null : "Please enter a valid YouTube or Vimeo URL");
+  };
+
+  const handleClipNow = () => {
+    if (!validateUrl(videoUrl)) {
+      setUrlError("Please enter a valid YouTube or Vimeo URL");
+      return;
+    }
+    router.push(`/dashboard/processing?source=${encodeURIComponent(videoUrl)}`);
+  };
+
   return (
     <div className="w-full bg-[#080C0B]/80 backdrop-blur-3xl border border-brand/20 rounded-[32px] p-6 sm:p-10 shadow-[0_0_100px_rgba(0,229,143,0.03),inset_0_0_20px_rgba(0,229,143,0.05)] relative overflow-hidden group">
       {/* Glow Effect Corner */}
@@ -46,9 +75,9 @@ export default function CreateClipsForm() {
       
       <div className="space-y-8">
         {/* Import from URL Section */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <label className="text-[13px] font-bold text-[#5A6F65] uppercase tracking-wider block ml-1">
-            Import from URL
+            Paste YouTube or Vimeo URL
           </label>
           <div className="relative flex items-center group/input">
             <div className="absolute left-6 text-[#3A4A43] group-focus-within/input:text-brand transition-colors">
@@ -56,13 +85,23 @@ export default function CreateClipsForm() {
             </div>
             <input 
               type="text" 
-              placeholder="Paste YouTube, TikTok or Twitch link here..." 
-              className="w-full h-14 bg-[#0B100E] border border-white/[0.03] focus:border-brand/40 focus:ring-4 focus:ring-brand/5 rounded-2xl pl-16 pr-44 text-[14px] font-medium placeholder-[#3A4A43] text-white transition-all outline-none"
+              value={videoUrl}
+              onChange={handleUrlChange}
+              placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..." 
+              className={`w-full h-14 bg-[#0B100E] border rounded-2xl pl-16 pr-36 text-[14px] font-medium placeholder-[#3A4A43] text-white transition-all outline-none ${
+                urlError ? "border-[#FF6B6B] ring-0" : "border-white/[0.03] focus:border-[#00E58F]/60"
+              } focus:ring-4 ${urlError ? "focus:ring-[#FF6B6B]/20" : "focus:ring-[#00E58F]/15"}`}
             />
-            <button className="absolute right-2 px-6 py-3 bg-brand hover:bg-brand-hover text-black font-bold rounded-xl text-[14px] transition-all active:scale-[0.98] shadow-[0_4px_20px_rgba(0,229,143,0.2)]">
-              Fetch Video
+            <button 
+              onClick={handleClipNow}
+              className="absolute right-2 px-5 py-3 bg-[#00E58F] hover:bg-[#00f69f] text-black font-bold rounded-xl text-[14px] transition-all active:scale-[0.98] shadow-[0_6px_30px_rgba(0,229,143,0.25)]"
+            >
+              Clip Now
             </button>
           </div>
+          {urlError && (
+            <p className="text-[12px] text-[#FF6B6B] ml-1">{urlError}</p>
+          )}
         </div>
 
         {/* Divider */}
@@ -134,23 +173,14 @@ export default function CreateClipsForm() {
               <p className="text-[14px] font-bold text-white group-hover/toggle:text-brand transition-colors">Auto-generate clips</p>
               <p className="text-[11px] font-medium text-[#5A6F65]">Extract 50–200 viral moments</p>
             </div>
-            <button 
-              onClick={() => setAutoGenerate(!autoGenerate)}
-              className={`w-12 h-6 rounded-full relative transition-all duration-300 ${
-                autoGenerate ? "bg-brand" : "bg-[#1A221E]"
-              }`}
-            >
-              <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
-                autoGenerate ? "left-7" : "left-1"
-              }`} />
-            </button>
+            <Switch checked={autoGenerate} onChange={(v) => setAutoGenerate(v)} ariaLabel="Auto-generate clips" />
           </div>
         </div>
 
         {/* Footer Action Row */}
         <div className="pt-6 border-t border-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5 text-[#5A6F65]">
-            <Info className="w-4 h-4" />
+            <Info className="w-4 h-4 text-[#5A6F65]" />
             <span className="text-[13px] font-medium tracking-tight">Estimated processing time: <span className="text-white">4–6 minutes</span></span>
           </div>
           <button 
