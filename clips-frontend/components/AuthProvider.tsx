@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       }
     } else {
-      if (pathname === "/dashboard" || pathname === "/onboarding") {
+      if (pathname === "/dashboard" || pathname === "/onboarding" || pathname === "/earnings") {
         router.push("/login");
       }
     }
