@@ -30,7 +30,12 @@ export default function ClipCard({
   onSelect 
 }: ClipCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const isHighScore = score >= 80;
+
+  const getScoreStyle = (s: number) => {
+    if (s >= 90) return "bg-[#00E58F] border-[#00E58F] text-black shadow-[0_0_20px_rgba(0,229,143,0.4)]";
+    if (s >= 70) return "bg-[#FACC15] border-[#FACC15] text-black shadow-[0_0_20px_rgba(250,204,21,0.4)]";
+    return "bg-[#EF4444] border-[#EF4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.4)]";
+  };
 
   return (
     <div 
@@ -66,12 +71,8 @@ export default function ClipCard({
         </div>
 
         {/* Score Badge (Top Right) */}
-        <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-lg backdrop-blur-md border z-20 transition-all ${
-          isHighScore 
-            ? "bg-[#00E58F] border-brand text-black shadow-[0_0_20px_rgba(0,229,143,0.4)]" 
-            : "bg-orange-500 border-orange-500 text-white"
-        }`}>
-          <span className="text-[10px] font-black tracking-widest leading-none">{score} SCORE</span>
+        <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-lg backdrop-blur-md border z-20 transition-all ${getScoreStyle(score)}`}>
+          <span className="text-[10px] font-black tracking-widest leading-none">AI SCORE {score}%</span>
         </div>
 
         {/* Play Overlay (Hover) */}

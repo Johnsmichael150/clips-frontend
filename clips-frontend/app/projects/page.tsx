@@ -17,6 +17,7 @@ const mockClips = [
 
 export default function ProjectsPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isMinting, setIsMinting] = useState(false);
   const [captionsStyle, setCaptionsStyle] = useState("All Styles");
   const [viralityLevels, setViralityLevels] = useState<string[]>(["high", "medium", "low"]);
 
@@ -54,6 +55,24 @@ export default function ProjectsPage() {
     }
   };
 
+  const handleMint = async () => {
+    if (selectedIds.length === 0) return;
+    
+    setIsMinting(true);
+    try {
+      console.log(`Minting NFTs with IDs: ${selectedIds.join(", ")}`);
+      // Simulate an API call for minting
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      alert(`Successfully minted ${selectedIds.length} clip(s)!`);
+      setSelectedIds([]); // Clear selection after successful mint
+    } catch (error) {
+      console.error("Minting failed", error);
+      alert("Failed to mint clips");
+    } finally {
+      setIsMinting(false);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-[#050505] text-white font-sans overflow-hidden">
       {/* Background Effects */}
@@ -88,7 +107,11 @@ export default function ProjectsPage() {
           </div>
           
           {/* Docked Actions Footer (now truly always visible and grounded) */}
-          <SelectionFooter count={selectedIds.length} />
+          <SelectionFooter 
+            count={selectedIds.length} 
+            onMint={handleMint}
+            isMinting={isMinting}
+          />
         </div>
       </main>
     </div>
