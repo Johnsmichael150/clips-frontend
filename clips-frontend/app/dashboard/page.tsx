@@ -16,7 +16,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-[#050505] text-white font-sans overflow-hidden">
       {/* Radial Glows */}
-      <div className="fixed top-0 left-0 w-[50vw] h-[50vw] rounded-full bg-brand/5 blur-[120px] pointer-events-none -translate-x-1/4 -translate-y-1/4" />
+      <div className="glow-large fixed top-0 left-0 w-[50vw] h-[50vw] rounded-full bg-brand/5 blur-[120px] pointer-events-none -translate-x-1/4 -translate-y-1/4" />
       <div className="fixed top-1/4 right-0 w-[600px] h-[600px] bg-brand/[0.03] rounded-full blur-[100px] pointer-events-none translate-x-1/3" />
       
       {/* Sidebar Backdrop Overlay (Mobile) */}
@@ -34,7 +34,7 @@ export default function DashboardPage() {
       <main className="flex-1 flex flex-col h-screen overflow-y-auto scrollbar-hide relative z-10">
         <DashboardHeader onMenuClick={() => setSidebarOpen(true)} />
 
-        <div className="px-4 sm:px-6 lg:px-10 pb-12 space-y-8 max-w-[1400px] mx-auto w-full">
+        <div className="dashboard-main space-y-8 max-w-[1400px] mx-auto w-full">
           {/* Stats Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <StatCard 
@@ -65,7 +65,7 @@ export default function DashboardPage() {
             </div> */}
 
             {/* Right Column: Platform Breakdown */}
-            <div className="flex lg:col-span-2 gap-20 flex-col w-full ">
+            <div className="chart-container flex lg:col-span-2 gap-4 sm:gap-8 flex-col w-full ">
               <PlatformDistribution />
               <AIInsightCard />
             </div>

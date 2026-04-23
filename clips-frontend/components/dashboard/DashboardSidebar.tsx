@@ -33,7 +33,7 @@ export default function DashboardSidebar({ isOpen, onClose }: SidebarProps) {
   const { user } = useAuth();
 
   return (
-    <aside className={`fixed inset-y-0 left-0 z-50 w-[280px] bg-[#050505] border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
+    <aside className={`fixed inset-y-0 left-0 z-50 w-72 sm:w-[300px] lg:w-[280px] bg-[#050505] border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
       isOpen ? "translate-x-0" : "-translate-x-full"
     } shrink-0 h-screen sticky top-0`}>
       {/* Logo & Close */}
@@ -60,7 +60,7 @@ export default function DashboardSidebar({ isOpen, onClose }: SidebarProps) {
             <Link
               key={item.id}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+              className={`sidebar-nav-item flex items-center gap-3 rounded-xl transition-all duration-200 group ${
                 isActive 
                   ? "bg-brand/10 text-brand font-bold" 
                   : "text-[#8e9895] hover:text-white hover:bg-white/[0.03]"
@@ -115,7 +115,7 @@ export default function DashboardSidebar({ isOpen, onClose }: SidebarProps) {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-[14px] font-bold text-white truncate">
-              {user?.profile?.username || user?.name || "Alex Rivera"}
+              {user?.username || user?.name || "Alex Rivera"}
             </div>
             <div className="text-[11px] text-[#5A6F65] truncate">
               {user?.email || "alex@clipcash.ai"}

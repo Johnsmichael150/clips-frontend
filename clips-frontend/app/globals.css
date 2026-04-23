@@ -49,6 +49,38 @@
   .shake {
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
   }
+
+  /* Mobile optimizations */
+  .dashboard-main {
+    @apply px-3 sm:px-6 lg:px-10 pb-12;
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .sidebar-nav-item {
+    @apply py-3 sm:py-4 px-4;
+  }
+
+  .chart-container {
+    @apply w-full h-auto min-h-[250px] sm:min-h-[300px] lg:min-h-[350px];
+  }
+
+  /* Smooth mobile scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Glow scaling for mobile */
+  @media (max-width: 640px) {
+    .glow-large {
+      transform: scale(0.8);
+    }
+  }
 }
 
 @keyframes shake {

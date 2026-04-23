@@ -46,12 +46,12 @@ export default function RevenueChart() {
         </button>
       </div>
 
-      <div className="flex-1 min-h-[220px] relative mt-4">
+      <div className="chart-container relative mt-4">
         {/* SVG Chart */}
         <svg 
-          viewBox="0 0 700 200" 
+          viewBox="0 0 100 50" 
           className="w-full h-full overflow-visible drop-shadow-[0_0_20px_rgba(0,229,143,0.1)]"
-          preserveAspectRatio="none"
+          preserveAspectRatio="meet"
         >
           <defs>
             <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -89,11 +89,11 @@ export default function RevenueChart() {
         </svg>
 
         {/* Labels */}
-        <div className="flex justify-between w-full mt-6">
+        <div className="flex flex-col sm:flex-row justify-between w-full mt-4 gap-1 sm:gap-0">
           {days.map((day, i) => (
             <span 
               key={day} 
-              className={`text-[11px] font-bold tracking-wider ${day === "THU" ? "text-brand" : "text-[#4A5D54]"}`}
+              className={`text-[10px] sm:text-[11px] font-bold tracking-wider ${day === "THU" ? "text-brand" : "text-[#4A5D54]"}`}
             >
               {day}
             </span>

@@ -7,14 +7,30 @@ export type User = {
   username?: string;
   password?: string;
   onboardingStep: number;
-  profile?: any;
+  profile?: Record<string, any>;
 };
 
 // In-memory fake database
-let users: User[] = [];
+const users: User[] = [];
 
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export interface Summary {
+  total: string;
+  completed: string;
+  pending: string;
+}
+
+export type Transaction = {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  platform: 'YouTube' | 'TikTok' | 'Instagram' | 'Twitch';
+  status: 'completed' | 'pending' | 'failed';
+  taxId: string;
+};
 
 export const MockApi = {
   /**
@@ -92,5 +108,56 @@ export const MockApi = {
     user.profile = { ...user.profile, ...data };
     
     return { success: true, user };
+  },
+
+  /**
+   * Get earnings report / transaction history for tax purposes
+   */
+  getEarningsReport: async (userId: string) => {
+    await delay(1000 + Math.random() * 500); // Variable latency for realism
+    
+    // Mock 50+ transactions totaling ~$12,450 matching dashboard
+    const baseTransactions: Omit<Transaction, 'id'>[] = [
+      { date: '2024-10-15', description: 'YouTube Shorts payout #47', amount: 245.80, platform: 'YouTube', status: 'completed', taxId: 'TX-001' },
+      { date: '2024-10-12', description: 'TikTok viral clips batch', amount: 189.50, platform: 'TikTok', status: 'completed', taxId: 'TX-002' },
+      { date: '2024-10-10', description: 'Instagram Reels monetization', amount: 156.20, platform: 'Instagram', status: 'completed', taxId: 'TX-003' },
+      { date: '2024-10-08', description: 'Twitch highlights payout', amount: 98.75, platform: 'Twitch', status: 'pending', taxId: 'TX-004' },
+      // ... more data to sum ~$12k
+    ];
+    
+    // Generate 50+ varied transactions
+    const transactions: Transaction[] = [];
+    const platforms = ['YouTube', 'TikTok', 'Instagram', 'Twitch'] as const;
+    const statuses = ['completed', 'pending', 'failed'] as const;
+    
+    let totalAmount = 0;
+    for (let i = 0; i < 55; i++) {
+      const platform = platforms[Math.floor(Math.random() * platforms.length)] as Transaction['platform'];
+      const status = i % 7 === 0 ? 'pending' : (i % 17 === 0 ? 'failed' : 'completed');
+      const amount = (10 + Math.random() * 300).toFixed(2);
+      const date = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      
+      const tx: Transaction = {
+        id: `tx-${Date.now()}-${i}`,
+        date,
+        description: `${platform} payout #${i + 1}`,
+        amount: parseFloat(amount),
+        platform,
+        status,
+        taxId: `TX-${String(i + 1).padStart(3, '0')}`,
+      };
+      
+      transactions.push(tx);
+      totalAmount += tx.amount;
+    }
+    
+    return {
+      transactions,
+      summary: {
+        total: totalAmount.toFixed(2),
+        completed: transactions.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.amount, 0).toFixed(2),
+        pending: transactions.filter(t => t.status === 'pending').reduce((sum, t) => sum + t.amount, 0).toFixed(2),
+      }
+    };
   }
 };
