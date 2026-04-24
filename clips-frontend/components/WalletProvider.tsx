@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 
 // EIP-1193 provider type (window.ethereum)
 declare global {
@@ -59,6 +59,12 @@ export function truncateAddress(address: string): string {
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<WalletState>(defaultState);
+  const stateRef = useRef(state);
+
+  // Sync ref with state so event listeners always see latest values
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   // Restore persisted session on mount
   useEffect(() => {
@@ -67,7 +73,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed: Partial<WalletState> = JSON.parse(stored);
         if (parsed.address && parsed.walletType) {
-          setState((prev) => ({
+          setState((prev: WalletState) => ({
             ...prev,
             address: parsed.address!,
             chainId: parsed.chainId ?? null,
@@ -93,15 +99,15 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         handleDisconnect();
       } else {
         const address = accs[0];
-        setState((prev) => ({ ...prev, address }));
-        persistSession({ address, chainId: state.chainId, walletType: "metamask" });
+        setState((prev: WalletState) => ({ ...prev, address }));
+        persistSession({ address, chainId: stateRef.current.chainId, walletType: "metamask" });
       }
     };
 
     const handleChainChanged = (chainId: unknown) => {
       const id = chainId as string;
-      setState((prev) => ({ ...prev, chainId: id }));
-      persistSession({ address: state.address, chainId: id, walletType: state.walletType });
+      setState((prev: WalletState) => ({ ...prev, chainId: id }));
+      persistSession({ address: stateRef.current.address, chainId: id, walletType: stateRef.current.walletType });
     };
 
     ethereum.on("accountsChanged", handleAccountsChanged);
@@ -111,8 +117,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       ethereum.removeListener("accountsChanged", handleAccountsChanged);
       ethereum.removeListener("chainChanged", handleChainChanged);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.address, state.chainId, state.walletType]);
+  }, []);
 
   function persistSession(data: { address: string | null; chainId: string | null; walletType: WalletType | null }) {
     if (data.address) {
@@ -129,14 +134,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
 
   const connectMetaMask = useCallback(async () => {
     if (!window.ethereum || !window.ethereum.isMetaMask) {
-      setState((prev) => ({
+      setState((prev: WalletState) => ({
         ...prev,
         error: "MetaMask is not installed. Please install the MetaMask browser extension.",
       }));
       return;
     }
 
-    setState((prev) => ({ ...prev, isConnecting: true, error: null }));
+    setState((prev: WalletState) => ({ ...prev, isConnecting: true, error: null }));
 
     try {
       const accounts = (await window.ethereum.request({
@@ -166,7 +171,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           ? "Connection rejected. Please approve the request in MetaMask."
           : (err as Error)?.message ?? "Failed to connect wallet. Please try again.";
 
-      setState((prev) => ({
+      setState((prev: WalletState) => ({
         ...prev,
         isConnecting: false,
         error: message,
@@ -179,7 +184,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const clearError = useCallback(() => {
-    setState((prev) => ({ ...prev, error: null }));
+    setState((prev: WalletState) => ({ ...prev, error: null }));
   }, []);
 
   return (
