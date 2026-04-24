@@ -65,7 +65,7 @@ export default function ClipsNavbar() {
             <div className="w-10 h-10 rounded-full border border-white/10 overflow-hidden bg-[#111] hover:border-brand/40 transition-colors cursor-pointer group">
               <img 
                 src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || user?.email || 'Guest'}`} 
-                alt="avatar" 
+                alt={`${user?.name || "User"} avatar`} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
               />
             </div>
