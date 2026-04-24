@@ -27,7 +27,10 @@ export type Transaction = {
   date: string;
   description: string;
   amount: number;
+  cryptoAmount?: number;
+  cryptoCurrency?: 'ETH' | 'SOL' | 'USDC';
   platform: 'YouTube' | 'TikTok' | 'Instagram' | 'Twitch';
+  type: 'payout' | 'royalty' | 'mint' | 'referral';
   status: 'completed' | 'pending' | 'failed';
   taxId: string;
 };
@@ -156,23 +159,31 @@ export const MockApi = {
     // Generate 50+ varied transactions
     const transactions: Transaction[] = [];
     const platforms = ['YouTube', 'TikTok', 'Instagram', 'Twitch'] as const;
-    const statuses = ['completed', 'pending', 'failed'] as const;
+    const types = ['payout', 'royalty', 'mint', 'referral'] as const;
+    const cryptoCurrencies = ['ETH', 'SOL', 'USDC'] as const;
     
     let totalAmount = 0;
     for (let i = 0; i < 55; i++) {
       const platform = platforms[Math.floor(Math.random() * platforms.length)] as Transaction['platform'];
+      const type = types[i % types.length] as Transaction['type'];
       const status = i % 7 === 0 ? 'pending' : (i % 17 === 0 ? 'failed' : 'completed');
-      const amount = (10 + Math.random() * 300).toFixed(2);
+      const amount = parseFloat((10 + Math.random() * 300).toFixed(2));
       const date = new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const hasCrypto = type === 'mint' || type === 'royalty';
       
       const tx: Transaction = {
-        id: `tx-${Date.now()}-${i}`,
+        id: `TX-${String(i + 1).padStart(5, '0')}`,
         date,
-        description: `${platform} payout #${i + 1}`,
-        amount: parseFloat(amount),
+        description: `${platform} ${type} #${i + 1}`,
+        amount,
+        ...(hasCrypto && {
+          cryptoAmount: parseFloat((amount / 2000 + Math.random() * 0.05).toFixed(4)),
+          cryptoCurrency: cryptoCurrencies[i % cryptoCurrencies.length],
+        }),
         platform,
+        type,
         status,
-        taxId: `TX-${String(i + 1).padStart(3, '0')}`,
+        taxId: `TAX-${String(i + 1).padStart(3, '0')}`,
       };
       
       transactions.push(tx);

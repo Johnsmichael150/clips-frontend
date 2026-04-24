@@ -7,6 +7,8 @@ import ClipGrid from "@/components/projects/ClipGrid";
 import SelectionFooter from "@/components/projects/SelectionFooter";
 import { X } from "lucide-react";
 
+const RECOMMENDATION_THRESHOLD = 90;
+
 const mockClips = [
   { id: "1", title: "Clip #01 - The Big Reveal Hook", thumbnail: "/projects/thumb1.png", score: 94, scoreKey: "high", duration: "00:45", style: "Bold & Dynamic", status: "pending" },
   { id: "2", title: "Clip #02 - Technical Deep Dive", thumbnail: "/projects/thumb2.png", score: 68, scoreKey: "medium", duration: "00:58", style: "Minimalist", status: "listed" },
@@ -23,6 +25,7 @@ export default function ProjectsPage() {
   const [viralityLevels, setViralityLevels] = useState<string[]>(["high", "medium", "low"]);
   const [vaultFilter, setVaultFilter] = useState("pending");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [aiRecommendations, setAiRecommendations] = useState(false);
 
   const filteredClips = useMemo(() => {
     return mockClips.filter(clip => {
@@ -38,6 +41,20 @@ export default function ProjectsPage() {
            (viralityLevels.length < 3 ? 1 : 0) + 
            (vaultFilter !== "pending" ? 1 : 0);
   }, [captionsStyle, viralityLevels, vaultFilter]);
+
+  // Clips that score at or above the recommendation threshold
+  const recommendedIds = useMemo(
+    () => filteredClips.filter(c => c.score >= RECOMMENDATION_THRESHOLD).map(c => c.id),
+    [filteredClips]
+  );
+
+  const handleAutoSelect = useCallback(() => {
+    setSelectedIds(recommendedIds);
+  }, [recommendedIds]);
+
+  const handleToggleRecommendations = useCallback(() => {
+    setAiRecommendations(prev => !prev);
+  }, []);
 
   const handleViralityToggle = useCallback((level: string) => {
     setViralityLevels(prev =>
@@ -148,6 +165,11 @@ export default function ProjectsPage() {
               selectedIds={selectedIds}
               onSelect={handleSelect}
               onSelectAll={handleSelectAll}
+              aiRecommendations={aiRecommendations}
+              recommendedIds={recommendedIds}
+              recommendationThreshold={RECOMMENDATION_THRESHOLD}
+              onToggleRecommendations={handleToggleRecommendations}
+              onAutoSelect={handleAutoSelect}
             />
           </div>
           

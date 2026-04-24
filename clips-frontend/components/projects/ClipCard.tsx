@@ -5,7 +5,8 @@ import {
   Play, 
   Download, 
   Edit, 
-  Check 
+  Check,
+  Sparkles,
 } from "lucide-react";
 
 interface ClipCardProps {
@@ -15,6 +16,7 @@ interface ClipCardProps {
   score: number;
   duration: string;
   isSelected: boolean;
+  isRecommended?: boolean;
   onSelect: (id: string) => void;
 }
 
@@ -24,7 +26,8 @@ const ClipCard = memo(function ClipCard({
   thumbnail, 
   score, 
   duration, 
-  isSelected, 
+  isSelected,
+  isRecommended = false,
   onSelect 
 }: ClipCardProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -39,14 +42,23 @@ const ClipCard = memo(function ClipCard({
     <div 
       className={`group relative bg-[#0B100E] border rounded-[24px] sm:rounded-[32px] overflow-hidden transition-all duration-500 ${
         isSelected 
-          ? "border-brand ring-1 ring-brand/20 shadow-[0_0_50px_rgba(0,229,143,0.15)]" 
+          ? "border-brand ring-1 ring-brand/20 shadow-[0_0_50px_rgba(0,229,143,0.15)]"
+          : isRecommended
+          ? "border-brand/40 ring-1 ring-brand/10 shadow-[0_0_30px_rgba(0,229,143,0.08)]"
           : "border-white/5 hover:border-white/20"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Recommended ribbon */}
+      {isRecommended && !isSelected && (
+        <div className="absolute top-0 left-0 right-0 z-30 flex items-center gap-1.5 px-4 py-1.5 bg-brand/10 border-b border-brand/20">
+          <Sparkles className="w-3 h-3 text-brand shrink-0" aria-hidden="true" />
+          <span className="text-[10px] font-black text-brand uppercase tracking-widest">AI Recommended</span>
+        </div>
+      )}
       {/* Thumbnail Area */}
-      <div className="relative aspect-video overflow-hidden group/thumb">
+      <div className={`relative aspect-video overflow-hidden group/thumb ${isRecommended && !isSelected ? "mt-[28px]" : ""}`}>
         <img 
           src={thumbnail} 
           alt={title} 
