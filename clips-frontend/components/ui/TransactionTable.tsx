@@ -65,7 +65,7 @@ function CopyId({ id }: { id: string }) {
 
 // ─── Sort Header ─────────────────────────────────────────────────────────────
 
-type SortKey = "date" | "amount" | "platform" | "status" | "type";
+type SortKey = "date" | "amount" | "platform" | "status" | "type" | "description";
 
 function SortTh({
   label,
@@ -91,12 +91,13 @@ function SortTh({
       <span className="inline-flex items-center gap-1">
         {label}
         <span className="flex flex-col -space-y-0.5">
-          <ChevronUp
-            className={`w-2.5 h-2.5 ${active && dir === "asc" ? "text-brand" : "text-[#4A5D54]"}`}
-          />
-          <ChevronDown
-            className={`w-2.5 h-2.5 ${active && dir === "desc" ? "text-brand" : "text-[#4A5D54]"}`}
-          />
+          {active && dir === "asc" ? (
+            <ChevronUp className="w-2.5 h-2.5 text-brand" />
+          ) : active && dir === "desc" ? (
+            <ChevronDown className="w-2.5 h-2.5 text-brand" />
+          ) : (
+            <div className="w-2.5 h-2.5" /> // Spacer to keep alignment
+          )}
         </span>
       </span>
     </th>
@@ -154,6 +155,10 @@ export default function TransactionTable({
           av = a.type;
           bv = b.type;
           break;
+        case "description":
+          av = a.description;
+          bv = b.description;
+          break;
       }
       if (av < bv) return sortDir === "asc" ? -1 : 1;
       if (av > bv) return sortDir === "asc" ? 1 : -1;
@@ -191,7 +196,7 @@ export default function TransactionTable({
                 Transaction ID
               </th>
               <SortTh label="Date" sortKey="date" current={sortKey} dir={sortDir} onSort={handleSort} />
-              <SortTh label="Platform / Type" sortKey="platform" current={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortTh label="Description / Type" sortKey="description" current={sortKey} dir={sortDir} onSort={handleSort} />
               <SortTh label="Status" sortKey="status" current={sortKey} dir={sortDir} onSort={handleSort} />
               <SortTh label="Amount" sortKey="amount" current={sortKey} dir={sortDir} onSort={handleSort} className="text-right pr-6" />
             </tr>
@@ -215,7 +220,7 @@ export default function TransactionTable({
                 {/* Platform / Type */}
                 <td className="py-4 px-4">
                   <div className="flex flex-col gap-1">
-                    <span className="text-[13px] font-medium text-white">{tx.platform}</span>
+                    <span className="text-[13px] font-medium text-white line-clamp-1">{tx.description}</span>
                     <span
                       className={`inline-flex w-fit px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${typeColors[tx.type]}`}
                     >

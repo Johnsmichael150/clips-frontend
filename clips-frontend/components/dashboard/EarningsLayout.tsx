@@ -130,7 +130,7 @@ function EarningsSidebar({
               src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${
                 user?.name || user?.email || "Guest"
               }`}
-              alt={`${user?.profile?.username || user?.name || 'Guest'} avatar`}
+              alt={`${user?.profile?.username || user?.name || "User"} avatar`}
               className="w-full h-full object-cover"
             />
           </div>

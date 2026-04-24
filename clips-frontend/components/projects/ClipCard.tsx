@@ -68,11 +68,21 @@ const ClipCard = memo(function ClipCard({
         />
         
         {/* Selection Indicator (Top Left) — always visible on touch, hover on desktop */}
-        <div 
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onSelect(id);
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              onSelect(id);
+            }
+          }}
+          aria-label={`Select clip: ${title}`}
+          aria-pressed={isSelected}
           className={`absolute top-3 left-3 sm:top-4 sm:left-4 w-8 h-8 sm:w-6 sm:h-6 rounded-lg border flex items-center justify-center transition-all cursor-pointer z-20 touch-manipulation ${
             isSelected 
               ? "bg-brand border-brand shadow-[0_0_15px_rgba(0,229,143,0.4)]" 
@@ -80,7 +90,7 @@ const ClipCard = memo(function ClipCard({
           }`}
         >
           {isSelected && <Check className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-black stroke-[4px]" />}
-        </div>
+        </button>
 
         {/* Score Badge (Top Right) */}
         <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-lg backdrop-blur-md border z-20 transition-all ${getScoreStyle(score)}`}>
