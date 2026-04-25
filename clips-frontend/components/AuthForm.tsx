@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useComingSoonToast } from "./useComingSoonToast";
 
 // Local inline SVG for Google/Apple to avoid external dependencies perfectly matching
 const GoogleIcon = () => (
@@ -23,6 +24,7 @@ interface AuthFormProps {
 export default function AuthForm({ mode = "login" }: AuthFormProps) {
   const { setUser } = useAuth();
   const router = useRouter();
+  const { showToast, ToastEl } = useComingSoonToast();
 
   const [currentMode, setCurrentMode] = useState<"login" | "signup">(mode);
   const [email, setEmail] = useState("");
@@ -71,15 +73,24 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
       </p>
       
       <div className="space-y-[14px] mb-8">
-        <button className="w-full flex items-center justify-center gap-3 bg-surface-hover hover:bg-border border border-border text-white py-3.5 rounded-[12px] font-medium transition-all text-[14px]">
+        <button
+          type="button"
+          onClick={() => showToast("Google sign-in")}
+          className="w-full flex items-center justify-center gap-3 bg-surface-hover hover:bg-border border border-border text-white py-3.5 rounded-[12px] font-medium transition-all text-[14px]"
+        >
           <GoogleIcon />
           Continue with Google
         </button>
-        <button className="w-full flex items-center justify-center gap-3 bg-surface-hover hover:bg-border border border-border text-white py-3.5 rounded-[12px] font-medium transition-all text-[14px]">
+        <button
+          type="button"
+          onClick={() => showToast("Apple sign-in")}
+          className="w-full flex items-center justify-center gap-3 bg-surface-hover hover:bg-border border border-border text-white py-3.5 rounded-[12px] font-medium transition-all text-[14px]"
+        >
           <AppleIcon />
           Continue with Apple
         </button>
       </div>
+      {ToastEl}
 
       <div className="flex items-center gap-4 text-muted-foreground text-[11px] font-bold tracking-[0.1em] uppercase mb-8">
         <div className="flex-1 h-px bg-border" />
