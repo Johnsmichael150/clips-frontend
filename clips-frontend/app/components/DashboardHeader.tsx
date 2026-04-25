@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 import { CloudUpload } from "lucide-react";
-import { useUserStore, selectUserName } from "@/app/store";
+import { useUserStore, selectUserName, type UserState, type UserActions } from "@/app/store";
 
 export default function DashboardHeader() {
-  const fetchUser = useUserStore((s) => s.fetchUser);
+  const fetchUser = useUserStore((s: UserState & UserActions) => s.fetchUser);
   const userName = useUserStore(selectUserName);
 
   useEffect(() => {

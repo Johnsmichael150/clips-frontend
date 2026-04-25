@@ -9,6 +9,8 @@ import {
   selectUserEmail,
   selectUserAvatar,
   selectPlanUsage,
+  type UserState,
+  type UserActions,
 } from "@/app/store";
 
 type NavItem = {
@@ -27,7 +29,7 @@ const navItems: NavItem[] = [
 ];
 
 export default function Sidebar() {
-  const fetchUser = useUserStore((s) => s.fetchUser);
+  const fetchUser = useUserStore((s: UserState & UserActions) => s.fetchUser);
   const name = useUserStore(selectUserName);
   const email = useUserStore(selectUserEmail);
   const avatarUrl = useUserStore(selectUserAvatar);

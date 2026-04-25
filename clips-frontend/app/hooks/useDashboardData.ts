@@ -19,6 +19,8 @@ import {
   selectRevenueTrend,
   selectRecentProjects,
   selectDashboardMeta,
+  type DashboardState,
+  type DashboardActions,
 } from "@/app/store";
 
 // Re-export types so existing imports from this file keep working
@@ -41,7 +43,7 @@ export function useDashboardData(): {
   loading: boolean;
   error: Error | null;
 } {
-  const fetchDashboard = useDashboardStore((s) => s.fetchDashboard);
+  const fetchDashboard = useDashboardStore((s: DashboardState & DashboardActions) => s.fetchDashboard);
   const stats = useDashboardStore(selectStats);
   const revenueTrend = useDashboardStore(selectRevenueTrend);
   const recentProjects = useDashboardStore(selectRecentProjects);
