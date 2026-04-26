@@ -1,59 +1,41 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Download, Search, X } from 'lucide-react';
-import { Transaction, MockApi, Summary } from '@/app/lib/mockApi';
-import { useAuth } from '@/components/AuthProvider';
-import TransactionTable from '@/components/ui/TransactionTable';
-import { useEarningsSearch } from '@/app/lib/EarningsSearchContext';
-import { useDebounce } from '@/app/lib/useDebounce';
+import React, { useState, useMemo } from "react";
+import { Download, Search, X } from "lucide-react";
+import { Transaction, Summary } from "@/app/lib/mockApi";
+import TransactionTable from "@/components/ui/TransactionTable";
+import { useEarningsSearch } from "@/app/lib/EarningsSearchContext";
+import { useDebounce } from "@/app/lib/useDebounce";
 
 interface EarningsTableProps {
-  onExport?: (format: 'csv') => void;
+  // NEW: Accept the data as props instead of fetching it
+  transactions: Transaction[];
+  summary: Summary;
+  loading: boolean;
+  onExport?: (format: "csv") => void;
 }
 
-export default function EarningsTable({ onExport }: EarningsTableProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [summary, setSummary] = useState<Summary>({ total: '0.00', completed: '0.00', pending: '0.00' });
-  const [loading, setLoading] = useState(true);
-
-  // Local search bar (within the table panel) — kept for table-scoped filtering
-  const [localSearch, setLocalSearch] = useState('');
-
-  // Global search from the EarningsLayout header
+export default function EarningsTable({
+  transactions,
+  summary,
+  loading,
+  onExport,
+}: EarningsTableProps) {
+  // Local search bar logic remains the same
+  const [localSearch, setLocalSearch] = useState("");
   const { searchQuery } = useEarningsSearch();
 
-  const { user } = useAuth();
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!user?.id) return;
-      try {
-        setLoading(true);
-        const { transactions: txs, summary: sum } = await MockApi.getEarningsReport(user.id);
-        setTransactions(txs);
-        setSummary(sum);
-      } catch (error) {
-        console.error('Failed to fetch earnings:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [user?.id]);
-
-  // Debounce both search inputs at 300ms so filtering only runs
-  // after the user pauses typing — prevents jank on every keystroke
   const debouncedLocalSearch = useDebounce(localSearch, 300);
   const debouncedGlobalSearch = useDebounce(searchQuery, 300);
 
-  // Combine: global header search takes priority; local search refines further
-  const activeTerm = (debouncedGlobalSearch || debouncedLocalSearch).toLowerCase().trim();
+  const activeTerm = (debouncedGlobalSearch || debouncedLocalSearch)
+    .toLowerCase()
+    .trim();
 
   const filtered = useMemo(() => {
     if (!activeTerm) return transactions;
 
-    return transactions.filter(tx => {
+    return transactions.filter((tx) => {
       return (
         tx.id.toLowerCase().includes(activeTerm) ||
         tx.description.toLowerCase().includes(activeTerm) ||
@@ -69,19 +51,31 @@ export default function EarningsTable({ onExport }: EarningsTableProps) {
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
+      {/* Summary Cards Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-surface border border-border rounded-[24px] p-8">
-          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">Total Earnings</div>
-          <div className="text-[28px] font-extrabold text-white">${summary.total}</div>
+          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">
+            Total Earnings
+          </div>
+          <div className="text-[28px] font-extrabold text-white">
+            ${summary.total}
+          </div>
         </div>
         <div className="bg-surface border border-border rounded-[24px] p-8">
-          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">Completed</div>
-          <div className="text-[28px] font-extrabold text-brand">${summary.completed}</div>
+          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">
+            Completed
+          </div>
+          <div className="text-[28px] font-extrabold text-brand">
+            ${summary.completed}
+          </div>
         </div>
         <div className="bg-surface border border-border rounded-[24px] p-8">
-          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">Pending</div>
-          <div className="text-[28px] font-extrabold text-warning">${summary.pending}</div>
+          <div className="text-muted text-[13px] font-bold uppercase tracking-wider mb-2">
+            Pending
+          </div>
+          <div className="text-[28px] font-extrabold text-warning">
+            ${summary.pending}
+          </div>
         </div>
       </div>
 
@@ -100,9 +94,8 @@ export default function EarningsTable({ onExport }: EarningsTableProps) {
             />
             {localSearch && (
               <button
-                onClick={() => setLocalSearch('')}
+                onClick={() => setLocalSearch("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A5D54] hover:text-white transition-colors"
-                aria-label="Clear table search"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -110,16 +103,11 @@ export default function EarningsTable({ onExport }: EarningsTableProps) {
           </div>
           <div className="text-muted text-[13px]">
             {filtered.length} of {transactions.length} transactions
-            {activeTerm && (
-              <span className="ml-2 text-brand font-medium">
-                for &quot;{activeTerm}&quot;
-              </span>
-            )}
           </div>
         </div>
         <button
-          onClick={() => onExport?.('csv')}
-          className="bg-brand hover:bg-brand-hover text-black px-6 py-2.5 rounded-xl font-bold text-[14px] flex items-center gap-2 transition-all shadow-lg hover:shadow-xl active:scale-[0.98]"
+          onClick={() => onExport?.("csv")}
+          className="bg-brand hover:bg-brand-hover text-black px-6 py-2.5 rounded-xl font-bold text-[14px] flex items-center gap-2 transition-all"
         >
           <Download className="w-4 h-4" />
           Export CSV
