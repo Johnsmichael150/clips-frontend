@@ -1,7 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { ChevronDown } from "lucide-react";
+import {
+  useDashboardStore,
+  selectRevenueTrend,
+  selectDashboardMeta,
+} from "@/app/store";
 
 type Range = "6M" | "7D" | "30D" | "90D";
 
@@ -56,6 +61,42 @@ const COLOR_TIPS = "var(--color-tips)";
 const fmt = (v: number) =>
   v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v}`;
 
+// ── Data transformation ───────────────────────────────────────────────────────
+
+/**
+ * Transform RevenuePoint[] from store into lineChart format
+ * Expected format: { label, value }[]
+ */
+function transformRevenuePointsToLineChart(
+  points: Array<{ date: string; amount: number }>
+): Array<{ label: string; value: number }> {
+  if (!points || points.length === 0) return [];
+  
+  return points.map((p) => {
+    // Extract day from ISO date (e.g., "2024-03-01" -> "01")
+    const day = p.date.split("-")[2] || "";
+    return {
+      label: day,
+      value: p.amount,
+    };
+  });
+}
+
+/**
+ * Transform RevenuePoint[] into 6M bar chart format
+ * Expected format: { label, ads, tips }[]
+ * For now, uses mock data since real API structure may differ
+ */
+function transformRevenuePointsTo6MChart(
+  points: Array<{ date: string; amount: number }>
+): Array<{ label: string; ads: number; tips: number }> {
+  if (!points || points.length === 0) return DATA_6M;
+  
+  // Fallback to mock data if transformation isn't applicable
+  // In production, you'd need the API to return the breakdown by category (ads/tips)
+  return DATA_6M;
+}
+
 // ── Grouped Bar Chart (6M) ────────────────────────────────────────────────────
 
 const SVG_W = 700;
@@ -64,6 +105,34 @@ const PAD_L = 48;
 const PAD_R = 16;
 const PAD_T = 16;
 const PAD_B = 32;
+
+// ── Loading Skeleton ──────────────────────────────────────────────────────────
+
+function RevenueChartSkeleton() {
+  return (
+    <div className="bg-surface border border-border rounded-[24px] p-6 sm:p-8 flex flex-col gap-6 relative overflow-hidden">
+      {/* Header skeleton */}
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div className="space-y-1 flex-1">
+          <div className="h-6 bg-surface-hover rounded-lg w-32 animate-pulse" />
+          <div className="h-4 bg-surface-hover rounded-lg w-40 mt-2 animate-pulse" />
+        </div>
+        <div className="h-10 bg-surface-hover rounded-xl w-32 animate-pulse" />
+      </div>
+
+      {/* Legend skeleton */}
+      <div className="flex items-center gap-5">
+        <div className="h-4 bg-surface-hover rounded-lg w-24 animate-pulse" />
+        <div className="h-4 bg-surface-hover rounded-lg w-24 animate-pulse" />
+      </div>
+
+      {/* Chart skeleton */}
+      <div className="relative w-full" style={{ minHeight: SVG_H + 8 }}>
+        <div className="h-full bg-surface-hover rounded-lg animate-pulse" />
+      </div>
+    </div>
+  );
+}
 
 function BarChart({ data, rangeLabel }: { data: MonthPoint[], rangeLabel: string }) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -274,6 +343,33 @@ export default function RevenueChart() {
   const [open, setOpen]   = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Get data from store
+  const revenueTrend = useDashboardStore(selectRevenueTrend);
+  const { loading } = useDashboardStore(selectDashboardMeta);
+
+  // Fetch dashboard data on mount (via store's caching mechanism)
+  useEffect(() => {
+    const fetchDashboard = useDashboardStore.getState().fetchDashboard;
+    fetchDashboard();
+  }, []);
+
+  // Transform store data to chart format
+  const chartData6M = useMemo(() => {
+    if (revenueTrend && revenueTrend.length > 0) {
+      return transformRevenuePointsTo6MChart(revenueTrend);
+    }
+    return DATA_6M;
+  }, [revenueTrend]);
+
+  const chartDataLine = useMemo(() => {
+    if (revenueTrend && revenueTrend.length > 0) {
+      return transformRevenuePointsToLineChart(revenueTrend);
+    }
+    // For 7D/30D/90D when no real data, use mock
+    return DATA_LEGACY["7D"];
+  }, [revenueTrend]);
+
+  // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -284,11 +380,16 @@ export default function RevenueChart() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Show loading skeleton
+  if (loading && !revenueTrend.length) {
+    return <RevenueChartSkeleton />;
+  }
+
   const is6M      = range === "6M";
-  const totalAds  = DATA_6M.reduce((s, d) => s + d.ads, 0);
-  const totalTips = DATA_6M.reduce((s, d) => s + d.tips, 0);
+  const totalAds  = chartData6M.reduce((s, d) => s + d.ads, 0);
+  const totalTips = chartData6M.reduce((s, d) => s + d.tips, 0);
   const legacyPeak = !is6M
-    ? Math.max(...DATA_LEGACY[range as Exclude<Range, "6M">].map((d) => d.value))
+    ? Math.max(...chartDataLine.map((d) => d.value))
     : 0;
 
   return (
@@ -363,8 +464,8 @@ export default function RevenueChart() {
 
       {/* Chart */}
       {is6M
-        ? <BarChart data={DATA_6M} rangeLabel={RANGE_LABELS[range]} />
-        : <LineChart data={DATA_LEGACY[range as Exclude<Range, "6M">]} rangeLabel={RANGE_LABELS[range]} />
+        ? <BarChart data={chartData6M} rangeLabel={RANGE_LABELS[range]} />
+        : <LineChart data={chartDataLine} rangeLabel={RANGE_LABELS[range]} />
       }
 
       {/* Bottom glow on hover */}
