@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import EarningsLayout from "@/components/dashboard/EarningsLayout";
 import EarningsTable from "@/components/dashboard/EarningsTable";
 import StatCard from "@/components/dashboard/StatCard";
+<<<<<<< Updated upstream
 import {
   Download,
   DollarSign,
@@ -12,15 +13,23 @@ import {
   FileText,
 } from "lucide-react";
 import { MockApi, type Summary, type Transaction } from "@/app/lib/mockApi"; // Added Transaction type
+=======
+import { Download, DollarSign, TrendingUp, Wallet, FileText } from "lucide-react";
+import { MockApi, type Summary, type Transaction } from "@/app/lib/mockApi";
+>>>>>>> Stashed changes
 import { useAuth } from "@/components/AuthProvider";
 
 export default function EarningsPage() {
+<<<<<<< Updated upstream
   const [summary, setSummary] = useState<Summary>({
     total: "0.00",
     completed: "0.00",
     pending: "0.00",
   });
   // NEW: Store transactions in state to ensure consistency
+=======
+  const [summary, setSummary] = useState<Summary>({ total: '0.00', completed: '0.00', pending: '0.00' });
+>>>>>>> Stashed changes
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -30,11 +39,17 @@ export default function EarningsPage() {
       if (!user?.id) return;
       try {
         setLoading(true);
+<<<<<<< Updated upstream
         // Fetch once
         const data = await MockApi.getEarningsReport(user.id);
         // Store both summary and transactions
         setSummary(data.summary);
         setTransactions(data.transactions);
+=======
+        const { transactions: txs, summary: sum } = await MockApi.getEarningsReport(user.id);
+        setSummary(sum);
+        setTransactions(txs);
+>>>>>>> Stashed changes
       } catch (error) {
         console.error("Failed to load earnings summary:", error);
       } finally {
@@ -45,6 +60,7 @@ export default function EarningsPage() {
   }, [user?.id]);
 
   const exportCSV = () => {
+<<<<<<< Updated upstream
     // REFACTORED: No longer async because we don't call the API
     if (!user?.id || transactions.length === 0) return;
 
@@ -82,6 +98,31 @@ export default function EarningsPage() {
       console.error("Export failed:", error);
       alert("Export failed. Please try again.");
     }
+=======
+    if (!user?.id || loading) return;
+    
+    const csvContent = [
+      ['Date', 'Description', 'Amount', 'Platform', 'Status', 'Tax ID'],
+      ...transactions.map(tx => [
+        tx.date,
+        tx.description,
+        tx.amount.toFixed(2),
+        tx.platform,
+        tx.status,
+        tx.taxId
+      ])
+    ].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `clipcash-earnings-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+>>>>>>> Stashed changes
   };
 
   if (loading) {
@@ -149,9 +190,13 @@ export default function EarningsPage() {
           />
         </div>
 
+<<<<<<< Updated upstream
         {/* Pass the transactions to the table so the UI 
             shows the exact same data as the CSV export.
         */}
+=======
+        {/* Table */}
+>>>>>>> Stashed changes
         <EarningsTable
           transactions={transactions}
           summary={summary}
