@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import NFTCard from "./NFTCard";
 import { Search } from "lucide-react";
+import { useDebounce } from "@/app/lib/useDebounce";
 
 interface NFTGridProps {
   filter: "pending" | "listed" | "history";
@@ -213,9 +214,17 @@ const mockNFTData = {
 };
 
 export default function NFTGrid({ filter }: NFTGridProps) {
-  const nfts = useMemo(() => {
-    return mockNFTData[filter] || [];
-  }, [filter]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
+  const filteredNFTs = useMemo(() => {
+    const baseNFTs = mockNFTData[filter] || [];
+    if (!debouncedSearch) return baseNFTs;
+    
+    return baseNFTs.filter(nft => 
+      nft.title.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+  }, [filter, debouncedSearch]);
 
   const getFilterInfo = () => {
     switch (filter) {
@@ -243,15 +252,17 @@ export default function NFTGrid({ filter }: NFTGridProps) {
           <input
             type="text"
             placeholder="Search NFTs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-transparent text-white text-[13px] placeholder-muted-foreground outline-none w-40"
           />
         </div>
       </div>
 
       {/* NFT Grid */}
-      {nfts.length > 0 ? (
+      {filteredNFTs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {nfts.map((nft: any) => (
+          {filteredNFTs.map((nft: any) => (
             <NFTCard
               key={nft.id}
               id={nft.id}
@@ -272,21 +283,30 @@ export default function NFTGrid({ filter }: NFTGridProps) {
             <div className="w-16 h-16 bg-surface border border-border rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-[16px] font-bold text-white mb-2">No NFTs Found</h3>
+            <h3 className="text-[16px] font-bold text-white mb-2">
+              {debouncedSearch ? "No Search Results" : "No NFTs Found"}
+            </h3>
             <p className="text-[14px] text-muted max-w-xs">
-              {filter === "pending" && "Create and configure new NFTs to get started."}
-              {filter === "listed" && "No NFTs are currently listed for sale."}
-              {filter === "history" && "No minting history yet."}
+              {debouncedSearch 
+                ? `We couldn't find any NFTs matching "${debouncedSearch}"`
+                : (
+                  <>
+                    {filter === "pending" && "Create and configure new NFTs to get started."}
+                    {filter === "listed" && "No NFTs are currently listed for sale."}
+                    {filter === "history" && "No minting history yet."}
+                  </>
+                )
+              }
             </p>
           </div>
         </div>
       )}
 
       {/* Results Count */}
-      {nfts.length > 0 && (
+      {filteredNFTs.length > 0 && (
         <div className="text-center pt-4 border-t border-border">
           <p className="text-[13px] text-muted-foreground">
-            Showing <span className="font-bold text-white">{nfts.length}</span> NFTs
+            Showing <span className="font-bold text-white">{filteredNFTs.length}</span> NFTs
           </p>
         </div>
       )}
