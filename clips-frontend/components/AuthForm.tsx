@@ -89,8 +89,9 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
       <form onSubmit={handleAuthSubmit} className="space-y-4">
         {currentMode === "signup" && (
           <div>
-            <label className="block text-[13px] font-medium text-[#8e9895] mb-2">Full Name</label>
+            <label htmlFor="auth-name" className="block text-[13px] font-medium text-[#8e9895] mb-2">Full Name</label>
             <input 
+              id="auth-name"
               type="text" 
               required
               value={fullName}
@@ -101,7 +102,7 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
           </div>
         )}
         <div>
-          <label className="block text-[13px] font-medium text-[#8e9895] mb-2">Email address</label>
+          <label htmlFor="auth-email" className="block text-[13px] font-medium text-[#8e9895] mb-2">Email address</label>
           <input 
             id="auth-email"
             type="email" 
@@ -114,8 +115,9 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
         </div>
 
         <div>
-          <label className="block text-[13px] font-medium text-[#8e9895] mb-2">Password</label>
+          <label htmlFor="auth-password" className="block text-[13px] font-medium text-[#8e9895] mb-2">Password</label>
           <input 
+            id="auth-password"
             type="password" 
             required
             value={password}
