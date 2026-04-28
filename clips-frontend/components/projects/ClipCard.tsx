@@ -24,6 +24,8 @@ interface ClipCardProps {
   onEdit?: (id: string) => void;
   /** Optional callback invoked when the user clicks Download. */
   onDownload?: (id: string) => void;
+  /** Optional callback invoked when the user clicks Preview. */
+  onPreview?: (id: string) => void;
 }
 
 function useToast() {
@@ -46,6 +48,7 @@ const ClipCard = memo(function ClipCard({
   onSelect,
   onEdit,
   onDownload,
+  onPreview,
 }: ClipCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { toast, show: showToast } = useToast();
@@ -79,7 +82,11 @@ const ClipCard = memo(function ClipCard({
 
   const handlePreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    showToast("Preview coming soon", "info");
+    if (onPreview) {
+      onPreview(id);
+    } else {
+      showToast("Preview coming soon", "info");
+    }
   };
 
   const getScoreStyle = (s: number) => {
