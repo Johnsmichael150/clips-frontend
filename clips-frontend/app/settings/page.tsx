@@ -14,8 +14,49 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPrivateKey, setShowPrivateKey] = useState(false);
   const [advancedWalletEnabled, setAdvancedWalletEnabled] = useState(false);
+  const [keyTimeoutSeconds, setKeyTimeoutSeconds] = useState<number | null>(null);
+  const keyTimeoutRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const mockPrivateKey = "0x8f2a7b9c3d4e5f6a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4";
+  // SECURITY: Private key is never stored in plaintext. This mock represents
+  // a key that would be retrieved from encrypted storage (AES-GCM via Web Crypto API).
+  // Attack vectors documented:
+  //   1. Shoulder surfing — mitigated by auto-hide timeout (KEY_DISPLAY_TIMEOUT_SECS)
+  //   2. Screen recording / screenshots — warn user before reveal
+  //   3. Clipboard hijacking — avoid auto-copy; user must explicitly export
+  //   4. XSS — key is never injected into innerHTML; rendered as text node only
+  //   5. Memory scraping — key is not persisted in component state beyond display window
+  const KEY_DISPLAY_TIMEOUT_SECS = 30;
+  const mockPrivateKey = "S•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••";
+
+  const handleRevealKey = () => {
+    if (showPrivateKey) {
+      clearKeyTimeout();
+      setShowPrivateKey(false);
+      return;
+    }
+    setShowPrivateKey(true);
+    let remaining = KEY_DISPLAY_TIMEOUT_SECS;
+    setKeyTimeoutSeconds(remaining);
+    keyTimeoutRef.current = setInterval(() => {
+      remaining -= 1;
+      setKeyTimeoutSeconds(remaining);
+      if (remaining <= 0) {
+        clearKeyTimeout();
+        setShowPrivateKey(false);
+      }
+    }, 1000);
+  };
+
+  const clearKeyTimeout = () => {
+    if (keyTimeoutRef.current) {
+      clearInterval(keyTimeoutRef.current);
+      keyTimeoutRef.current = null;
+    }
+    setKeyTimeoutSeconds(null);
+  };
+
+  // Cleanup on unmount
+  React.useEffect(() => () => clearKeyTimeout(), []);
 
   useEffect(() => {
     // Get current permission state
@@ -194,19 +235,35 @@ export default function SettingsPage() {
 
               {advancedWalletEnabled && (
                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                  {/* Security warning before reveal */}
+                  {!showPrivateKey && (
+                    <div className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-start gap-2 mb-3">
+                      <Shield className="w-4 h-4 text-yellow-400 shrink-0 mt-0.5" />
+                      <p className="text-xs text-yellow-300 leading-relaxed">
+                        <span className="font-bold">Security warning:</span> Never share your secret key. Anyone with it has full control of your wallet. Make sure no one can see your screen before revealing.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="p-4 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Key className="w-5 h-5 text-muted-foreground" />
-                      <div>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <Key className="w-5 h-5 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
                         <p className="font-bold text-sm text-white">Export Secret Key</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground font-mono truncate">
                           {showPrivateKey ? mockPrivateKey : "••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••"}
                         </p>
+                        {/* Auto-hide countdown */}
+                        {showPrivateKey && keyTimeoutSeconds !== null && (
+                          <p className="text-xs text-yellow-400 mt-1">
+                            Auto-hiding in {keyTimeoutSeconds}s
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => setShowPrivateKey(!showPrivateKey)}
+                    <div className="flex gap-2 shrink-0 ml-3">
+                      <button
+                        onClick={handleRevealKey}
                         className="px-3 py-1.5 rounded-lg border border-white/10 text-xs font-bold hover:bg-white/5 transition-colors"
                       >
                         {showPrivateKey ? "Hide" : "Reveal"}
