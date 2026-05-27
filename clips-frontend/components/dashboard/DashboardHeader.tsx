@@ -6,7 +6,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useAuth } from "@/components/AuthProvider";
 import { useProcessStore } from "@/app/store";
 import WalletConnectButton from "@/components/WalletConnectButton";
-import { useAutoStellarWallet } from "@/app/hooks/useAutoStellarWallet";
+import analytics from "@/lib/analytics";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -112,6 +112,10 @@ export default function DashboardHeader({ onMenuClick }: HeaderProps) {
 
             const result = await response.json();
             
+            // Track video upload event
+            const totalSize = validFiles.reduce((sum, file) => sum + file.size, 0);
+            analytics.trackVideoUpload(totalSize, validFiles.length);
+            
             // Start processing in the store
             if (result.jobId) {
               const { startProcess } = useProcessStore.getState();
@@ -203,22 +207,8 @@ export default function DashboardHeader({ onMenuClick }: HeaderProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* #338 – Stellar auto-wallet balance pill */}
-        {stellarStatus === "ready" && (
-          <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl bg-brand/10 border border-brand/20">
-            <span className="w-2 h-2 rounded-full bg-brand shadow-[0_0_6px_rgba(0,229,143,0.8)]" />
-            <span className="text-[12px] font-bold text-brand">
-              {stellarBalance
-                ? `${parseFloat(stellarBalance.xlm).toLocaleString(undefined, { maximumFractionDigits: 2 })} XLM`
-                : "Wallet Ready"}
-            </span>
-          </div>
-        )}
-
-        <div className="hidden sm:block">
-          <WalletConnectButton compact />
-        </div>
+      <div className="flex items-center gap-2 sm:gap-4">
+        <WalletConnectButton compact />
 
         <button 
           onClick={toggleTheme}

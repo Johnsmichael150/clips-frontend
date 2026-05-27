@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Wallet, Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { useAutoStellarWallet } from "@/app/hooks/useAutoStellarWallet";
+import { Wallet, ExternalLink, Copy, Check, AlertCircle } from "lucide-react";
+import { useWalletConnection } from "@/app/hooks/useWalletConnection";
+import BalanceDisplay from "@/components/wallet/BalanceDisplay";
+import TransactionHistory from "@/components/wallet/TransactionHistory";
 
 /**
  * #337 – Web2-style wallet card.
@@ -145,12 +147,23 @@ export default function WalletInfoCard() {
         </form>
       )}
 
-      {/* No wallet state */}
-      {status === "idle" && !publicKey && (
-        <p className="text-muted text-[13px]">
-          Your Stellar wallet will appear here after login.
-        </p>
-      )}
+      {/* Quick Actions */}
+      <div className="mt-4 pt-4 border-t border-border">
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={handleViewOnExplorer}
+            className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-surface-hover hover:bg-border border border-border text-white font-medium text-[12px] transition-all"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            Explorer
+          </button>
+        </div>
+      </div>
+
+      {/* Transaction History */}
+      <div className="mt-4 pt-4 border-t border-border">
+        <TransactionHistory publicKey={publicKey!} network={network} limit={8} />
+      </div>
     </div>
   );
 }

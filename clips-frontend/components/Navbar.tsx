@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "./AuthProvider";
 import { LogOut } from "lucide-react";
 import { useComingSoonToast } from "./useComingSoonToast";
-import { useAutoStellarWallet } from "@/app/hooks/useAutoStellarWallet";
+import WalletStatus from "./WalletStatus";
 
 export default function Navbar() {
   const { user, setUser } = useAuth();
@@ -61,42 +61,32 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <div className="flex items-center gap-3" ref={dropdownRef}>
-                {/* #338 – Stellar balance pill in navbar */}
-                {stellarStatus === "ready" && (
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/10 border border-brand/20">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    <span className="text-[12px] font-bold text-brand">
-                      {stellarBalance
-                        ? `${parseFloat(stellarBalance.xlm).toLocaleString(undefined, { maximumFractionDigits: 2 })} XLM`
-                        : "Wallet Ready"}
-                    </span>
-                  </div>
-                )}
-                <div className="relative">
-                <button 
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="text-[14px] text-white font-medium px-4 py-2 bg-[#1A221E] border border-[#2A3B34] rounded-full shadow-sm hover:bg-[#212c26] transition-colors"
-                >
-                  {user.profile?.username || user.name || user.email}
-                </button>
-                
-                {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-[#131A17] border border-[#1E2A24] rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                    <button 
-                      onClick={() => {
-                        setUser(null);
-                        setDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-4 py-3 text-[14px] text-white hover:bg-[#1A221E] transition-colors"
-                    >
-                      <LogOut className="w-4 h-4 text-[#8e9895]" />
-                      <span>Log out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-              </div>
+              <>
+                <WalletStatus />
+                <div className="relative" ref={dropdownRef}>
+                  <button 
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="text-[14px] text-white font-medium px-4 py-2 bg-[#1A221E] border border-[#2A3B34] rounded-full shadow-sm hover:bg-[#212c26] transition-colors"
+                  >
+                    {user.profile?.username || user.name || user.email}
+                  </button>
+                  
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-[#131A17] border border-[#1E2A24] rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                      <button 
+                        onClick={() => {
+                          setUser(null);
+                          setDropdownOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2 px-4 py-3 text-[14px] text-white hover:bg-[#1A221E] transition-colors"
+                      >
+                        <LogOut className="w-4 h-4 text-[#8e9895]" />
+                        <span>Log out</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </header>
