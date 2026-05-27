@@ -31,35 +31,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const clearUser = useUserStore((state) => state.clearUser);
   const { data: session, status } = useSession();
 
-  // Restore user session from localStorage on mount
+  // Load initial auth state on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("clipcash_user");
-      if (stored) {
-        const parsed: User = JSON.parse(stored);
+    const stored = localStorage.getItem("clipcash_user");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
         setUserState(parsed);
-        setProfile({
-          id: parsed.id,
-          name: parsed.name || parsed.username || "User",
-          email: parsed.email,
-          avatarUrl: null,
-          plan: "pro" as const,
-          planUsagePercent: 80,
-        });
-        // Prefetch data in the background so it's ready when user lands on dashboard
-        useDashboardStore.getState().fetchDashboard();
-        useEarningsStore.getState().fetchEarnings();
+      } catch (e) {
+        console.error("Failed to parse stored user", e);
       }
-    } catch {
-      // Ignore malformed storage
-    } finally {
-      setIsLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsLoading(false);
   }, []);
 
- useEffect(() => {
-  if (isLoading) return;
+  useEffect(() => {
+    if (isLoading) return;
 
   const protectedRoutes = [
     "/dashboard",
