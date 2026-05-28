@@ -4,8 +4,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { Wallet, ExternalLink, Copy, Check, AlertCircle, Send, Loader2, CheckCircle } from "lucide-react";
 import { useWalletConnection } from "@/app/hooks/useWalletConnection";
 import { useAutoStellarWallet } from "@/app/hooks/useAutoStellarWallet";
+import { useWallet } from "@/components/WalletProvider";
 import BalanceDisplay from "@/components/wallet/BalanceDisplay";
 import TransactionHistory from "@/components/wallet/TransactionHistory";
+import TrustlineManager from "@/components/wallet/TrustlineManager";
 
 /**
  * #337 – Web2-style wallet card.
@@ -14,6 +16,7 @@ import TransactionHistory from "@/components/wallet/TransactionHistory";
  */
 export default function WalletInfoCard() {
   const { publicKey, status, balance, error, network } = useAutoStellarWallet();
+  const { stellarSecret, refreshBalance } = useWallet();
   const formRef = useRef<HTMLFormElement>(null);
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const amountInputRef = useRef<HTMLInputElement>(null);
@@ -270,6 +273,16 @@ export default function WalletInfoCard() {
           </button>
         </div>
       </div>
+
+      {/* Trustline Manager */}
+      {status === "ready" && publicKey && (
+        <TrustlineManager
+          publicKey={publicKey}
+          secretKey={stellarSecret}
+          existingTrustlines={balance?.otherAssets ?? []}
+          onTrustlineChanged={refreshBalance}
+        />
+      )}
 
       {/* Transaction History */}
       <div className="mt-4 pt-4 border-t border-border">

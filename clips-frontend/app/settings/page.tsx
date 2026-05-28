@@ -6,6 +6,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { useWallet } from "@/components/WalletProvider";
 import SocialRecoveryConfig from "@/components/SocialRecoveryConfig";
 import WalletConnectButton from "@/components/WalletConnectButton";
+import TrustlineManager from "@/components/wallet/TrustlineManager";
 import { Bell, BellOff, Check, X, Key, Wallet, Shield, Copy, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import {
@@ -301,6 +302,12 @@ export default function SettingsPage() {
 
                       {/* Social Recovery Section inside advanced settings */}
                       <SocialRecoveryConfig />
+
+                      {/* Trustline Manager */}
+                      <TrustlineManager
+                        publicKey={address!}
+                        secretKey={stellarSecret}
+                      />
                     </div>
                   ) : (
                     // If Stellar wallet is NOT connected
