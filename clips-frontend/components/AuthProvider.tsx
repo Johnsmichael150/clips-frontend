@@ -45,47 +45,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  // Basic routing logic based on auth state
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || status === "loading") return;
 
-  const protectedRoutes = [
-    "/dashboard",
-    "/onboarding",
-    "/earnings",
-    "/projects",
-    "/vault",
-    "/platforms",
-    "/clips",
-  ];
+    const protectedRoutes = [
+      "/dashboard",
+      "/onboarding",
+      "/earnings",
+      "/projects",
+      "/vault",
+      "/platforms",
+      "/clips",
+    ];
 
-  const isProtectedRoute = protectedRoutes.some(route =>
-    pathname.startsWith(route)
-  );
+    const isProtectedRoute = protectedRoutes.some((route) =>
+      pathname.startsWith(route)
+    );
+    const isAuthRoute = pathname === "/login" || pathname === "/signup";
 
-  const isAuthRoute = pathname === "/login" || pathname === "/signup";
+    const authenticated = user || session;
 
-  // 🔐 Not logged in → block protected pages
-  if (!user && isProtectedRoute) {
-    router.push("/login");
-    return;
-  }
-
-  // 🔓 Logged in → prevent going back to auth pages
-  if (user && isAuthRoute) {
-    if (user.onboardingStep === 1 || user.onboardingStep === 2) {
-      router.push("/onboarding");
-    } else {
-      router.push("/dashboard");
+    // 🔐 Not logged in → block protected pages
+    if (!authenticated && isProtectedRoute) {
+      router.push("/login");
+      return;
     }
-    return;
-  }
 
-  // 🚫 Prevent accessing onboarding after completion
-  if (user && pathname === "/onboarding" && user.onboardingStep > 2) {
-    router.push("/dashboard");
-  }
+    // 🔓 Logged in → handle redirection from auth/onboarding pages
+    if (authenticated) {
+      if (isAuthRoute || pathname === "/") {
+        if (user?.onboardingStep === 1 || user?.onboardingStep === 2) {
+          router.push("/onboarding");
+        } else {
+          router.push("/dashboard");
+        }
+        return;
+      }
 
-}, [user, isLoading, pathname, router]);
+      if (
+        pathname === "/onboarding" &&
+        user?.onboardingStep &&
+        user.onboardingStep > 2
+      ) {
+        router.push("/dashboard");
+      }
+    }
+  }, [user, session, isLoading, status, pathname, router]);
 
   const setUser = (newUser: User | null) => {
     setUserState(newUser);
@@ -114,33 +120,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut({ callbackUrl: "/login" });
     setUser(null);
   };
-
-  // Basic routing logic based on auth state
-  useEffect(() => {
-    if (isLoading || status === "loading") return;
-
-    const protectedRoutes = ["/dashboard", "/onboarding", "/earnings", "/projects", "/vault", "/platforms", "/clips"];
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-    const isAuthRoute = pathname === "/login" || pathname === "/signup";
-
-    if (user || session) {
-      if (isAuthRoute || pathname === "/") {
-        if (user?.onboardingStep === 1 || user?.onboardingStep === 2) {
-          router.push("/onboarding");
-        } else {
-          router.push("/dashboard");
-        }
-      } else if (pathname === "/onboarding") {
-        if (user?.onboardingStep && user.onboardingStep > 2) {
-          router.push("/dashboard");
-        }
-      }
-    } else {
-      if (isProtectedRoute) {
-        router.push("/login");
-      }
-    }
-  }, [user, session, isLoading, status, pathname, router]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, logout, isLoading }}>

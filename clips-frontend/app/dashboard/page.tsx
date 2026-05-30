@@ -4,18 +4,16 @@ import React, { useState } from "react";
 import Link from "next/link";
 import  DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import StatCard from "@/components/dashboard/StatCard";
+import StatCardGroup from "@/components/dashboard/StatCardGroup";
 import RevenueChart from "@/components/dashboard/RevenueChart";
 import PlatformDistribution from "@/components/dashboard/PlatformDistribution";
 import AIInsightCard from "@/components/dashboard/AIInsightCard";
-import ProjectCard from "@/components/dashboard/ProjectCard";
+import RecentProjectsSection from "@/components/dashboard/RecentProjectsSection";
 import EarningsSummaryCards from "@/components/dashboard/EarningsSummaryCards";
 import SendPaymentForm from "@/components/SendPaymentForm";
-import WalletConnectButton from "@/components/WalletConnectButton";
 import WalletInfoCard from "@/components/dashboard/WalletInfoCard";
 import WalletHealthCard from "@/components/wallet/WalletHealthCard";
 import { useAutoStellarWallet } from "@/app/hooks/useAutoStellarWallet";
-import { DollarSign, Video, Globe } from "lucide-react";
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -44,26 +42,7 @@ export default function DashboardPage() {
 
         <div className="dashboard-main space-y-8 max-w-[1400px] mx-auto w-full">
           {/* Stats Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatCard 
-              label="Total Earnings" 
-              value="$12,450.80" 
-              trend="+12.5%" 
-              icon={DollarSign} 
-            />
-            <StatCard 
-              label="Clips Posted" 
-              value="142" 
-              trend="+8.2%" 
-              icon={Video} 
-            />
-            <StatCard 
-              label="Active Platforms" 
-              value="4" 
-              trend="Steady" 
-              icon={Globe} 
-            />
-          </div>
+          <StatCardGroup />
 
           {/* Wallet Information Card */}
           <WalletInfoCard />
@@ -104,33 +83,7 @@ export default function DashboardPage() {
           <AIInsightCard />
 
           {/* Bottom Section: Recent Projects */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[20px] font-extrabold text-white tracking-tight">Recent Projects</h3>
-              <Link href="/projects" className="text-[14px] font-bold text-brand hover:underline">View All</Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-2">
-              <ProjectCard 
-                title="Apex Legends Clutch Moments" 
-                clipsCount={2} 
-                status="processing"
-                thumbnail="/projects/thumb1.png"
-              />
-              <ProjectCard 
-                title="React Native Tutorial 2024" 
-                clipsCount={12} 
-                status="completed"
-                thumbnail="/projects/thumb2.png"
-              />
-              <ProjectCard 
-                title="Weekly Podcast Highlight #42" 
-                clipsCount={5} 
-                status="completed"
-                thumbnail="/projects/thumb3.png"
-              />
-            </div>
-          </div>
+          <RecentProjectsSection />
         </div>
       </main>
     </div>

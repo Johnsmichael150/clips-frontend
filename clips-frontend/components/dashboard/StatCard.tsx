@@ -10,7 +10,6 @@ interface StatCardProps {
   isPositive?: boolean;
   hideTrendIcon?: boolean;
   icon: LucideIcon;
-  hideTrendIcon?: boolean;
 }
 
 export default function StatCard({ label, value, trend, isPositive = true, icon: Icon, hideTrendIcon = false }: StatCardProps) {
