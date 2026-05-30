@@ -1,10 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { User } from "../app/lib/mockApi";
 import { useRouter, usePathname } from "next/navigation";
-import { useUserStore, useDashboardStore, useEarningsStore } from "@/app/store";
 import { useSession, signOut } from "next-auth/react";
+
+import { User } from "@/app/lib/mockApi";
+import { useUserStore, useDashboardStore, useEarningsStore } from "@/app/store";
 
 interface AuthContextType {
   user: User | null;

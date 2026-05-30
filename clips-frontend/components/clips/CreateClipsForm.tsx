@@ -9,7 +9,8 @@ import {
   Check, 
   Info 
 } from "lucide-react";
-import Switch from "../Switch";
+
+import Switch from "@/components/Switch";
 
 export default function CreateClipsForm() {
   const router = useRouter();

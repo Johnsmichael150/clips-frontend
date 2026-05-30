@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import Skeleton from "../ui/Skeleton";
+
+import Skeleton from "@/components/ui/Skeleton";
 
 /**
  * Skeleton loader for Project cards (ClipCard)

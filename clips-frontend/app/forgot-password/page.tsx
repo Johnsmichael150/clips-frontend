@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { MockApi } from "../lib/mockApi";
 import { useRouter } from "next/navigation";
+
+import { MockApi } from "@/app/lib/mockApi";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();

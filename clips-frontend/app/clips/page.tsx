@@ -6,10 +6,11 @@
  */
 
 import React from "react";
-import ClipsNavbar from "../../components/clips/ClipsNavbar";
-import Hero from "../../components/clips/Hero";
-import CreateClipsForm from "../../components/clips/CreateClipsForm";
-import ClipsStats from "../../components/clips/ClipsStats";
+
+import ClipsNavbar from "@/components/clips/ClipsNavbar";
+import Hero from "@/components/clips/Hero";
+import CreateClipsForm from "@/components/clips/CreateClipsForm";
+import ClipsStats from "@/components/clips/ClipsStats";
 
 export default function ClipsPage() {
   return (
